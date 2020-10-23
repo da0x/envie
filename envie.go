@@ -41,11 +41,13 @@ var AutoVerbose = true
 //        See AutoPanic
 func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
+	err2 := UnmarshalFromEnv(e)
 	if err1 != nil && err2 != nil {
 		if AutoPanic {
+			log.Printf("envie: error both methods of importing configurations failed")
+			log.Printf("envie: error loading env file:\n%v\n", err1)
+			log.Printf("envie: error loading system env:\n%v\n", err2)
 			log.Fatalf("envie: missing configurations.")
-			log.Printf("envie error env file:\n%v\n", err1)
-			log.Printf("envie error system env:\n%v\n", err2)
 		}
 	}
 }
