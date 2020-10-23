@@ -50,6 +50,12 @@ func Auto(e interface{}) {
 			log.Printf("envie:\n%v\n%v\n", err1, err2)
 		}
 	}
+	if err1 != nil {
+		log.Printf("envie error env file:\n%v\n", err1)
+	}
+	if err2 != nil {
+		log.Printf("envie error env file:\n%v\n", err2)
+	}
 	if AutoVerbose {
 		log.Println("envie: settings:")
 		log.Printf("%+v", e)
