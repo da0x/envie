@@ -41,17 +41,6 @@ var AutoVerbose = true
 //        See AutoPanic
 func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
-	if err1 != nil {
-		if AutoVerbose {
-			log.Printf("envie error env file:\n%v\n", err1)
-		}
-	}
-	err2 := UnmarshalFromEnv(e)
-	if err2 != nil {
-		if AutoVerbose {
-			log.Printf("envie error system env:\n%v\n", err2)
-		}
-	}
 	if err1 != nil && err2 != nil {
 		if AutoPanic {
 			log.Fatalf("envie: missing configurations.")
@@ -77,6 +66,9 @@ func UnmarshalFromEnv(e interface{}) error {
 		if len(val) <= 0 {
 			errors = append(errors, env)
 			continue
+		}
+		if AutoVerbose {
+			log.Printf("export %v=%v", env, val)
 		}
 		v.Field(i).SetString(val)
 	}
