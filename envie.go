@@ -52,7 +52,7 @@ func Auto(e interface{}) {
 	}
 	if AutoVerbose {
 		log.Println("envie: settings:")
-		log.Println(e)
+		log.Printf("%+v", e)
 	}
 }
 
