@@ -1,3 +1,5 @@
+![Go](https://github.com/da0x/envie/workflows/Go/badge.svg?branch=main)
+
 # envie
 Welcome to envie! This project helps you read a full struct of env variables
 from your system. First, the `Auto` function will attempt to read the environment
@@ -46,5 +48,4 @@ func main() {
 ## Maintainer
 Daher Alfawares
 
-![Go](https://github.com/da0x/envie/workflows/Go/badge.svg?branch=main)
 
