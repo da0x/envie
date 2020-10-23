@@ -24,47 +24,54 @@ import (
 )
 
 type entity struct {
-	V1 string `envie:"951f83e8-c682-405f-9b49-49b498a41613"`
-	V2 string `envie:"99217878-c9c3-4eaf-90ec-2b54d4da396b"`
-}
-
-func TestUnmarshalFromEnv(t *testing.T) {
-	hello := "hello"
-	world := "world"
-	os.Setenv("951f83e8-c682-405f-9b49-49b498a41613", hello)
-	os.Setenv("99217878-c9c3-4eaf-90ec-2b54d4da396b", world)
-	var e entity
-	err := UnmarshalFromEnv(&e)
-	if err != nil {
-		t.Errorf("Error %v", err)
-	}
-	if e.V1 != hello || e.V2 != world {
-		t.Errorf("envie: incorrect environment variables")
-	}
+	V1 string `envie:"TEST_VARIABLE_1"`
+	V2 string `envie:"TEST_VARIABLE_2"`
 }
 
 func TestUnmarshalFromEnvFile(t *testing.T) {
 	hello := "hello"
 	world := "world"
-	os.Setenv("951f83e8-c682-405f-9b49-49b498a41613", hello)
-	os.Setenv("99217878-c9c3-4eaf-90ec-2b54d4da396b", world)
 	var e entity
 	err := UnmarshalFromEnvFile(".env", &e)
 	if err != nil {
 		t.Errorf("Error %v", err)
 	}
-	if e.V1 != hello || e.V2 != world {
-		t.Errorf("envie: incorrect environment variables")
+	if e.V1 != hello {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+	}
+	if e.V2 != world {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 }
 
 func TestAuto(t *testing.T) {
 	hello := "Hello"
 	world := "world"
-	os.Setenv("951f83e8-c682-405f-9b49-49b498a41613", hello)
+	os.Setenv("TEST_VARIABLE_1", hello)
 	var e entity
 	Auto(&e)
-	if e.V1 != hello || e.V2 != world {
-		t.Errorf("envie: incorrect environment variables")
+	if e.V1 != hello {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+	}
+	if e.V2 != world {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+	}
+}
+
+func TestUnmarshalFromEnv(t *testing.T) {
+	hello := "hello"
+	world := "world"
+	os.Setenv("TEST_VARIABLE_1", hello)
+	os.Setenv("TEST_VARIABLE_2", world)
+	var e entity
+	err := UnmarshalFromEnv(&e)
+	if err != nil {
+		t.Errorf("Error %v", err)
+	}
+	if e.V1 != hello {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+	}
+	if e.V2 != world {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 }

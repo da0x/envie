@@ -41,27 +41,22 @@ var AutoVerbose = true
 //        See AutoPanic
 func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
-	err2 := UnmarshalFromEnv(e)
-	if AutoVerbose {
-		log.Println("envie: loaded settings:")
-		log.Printf("%+v", e)
-	}
-	if err1 != nil || err2 != nil {
-		if AutoVerbose {
-			log.Printf("envie:\n%v\n%v\n", err1, err2)
-		}
-		if AutoPanic {
-			log.Fatalf("envie:\n%v\n%v\n", err1, err2)
-		}
-	}
 	if err1 != nil {
 		if AutoVerbose {
 			log.Printf("envie error env file:\n%v\n", err1)
 		}
 	}
+	err2 := UnmarshalFromEnv(e)
 	if err2 != nil {
 		if AutoVerbose {
-			log.Printf("envie error env file:\n%v\n", err2)
+			log.Printf("envie error system env:\n%v\n", err2)
+		}
+	}
+	if err1 != nil && err2 != nil {
+		if AutoPanic {
+			log.Fatalf("envie: missing configurations.")
+			log.Printf("envie error env file:\n%v\n", err1)
+			log.Printf("envie error system env:\n%v\n", err2)
 		}
 	}
 }
@@ -69,6 +64,9 @@ func Auto(e interface{}) {
 // UnmarshalFromEnv reads an entire struct of env variables. Returns an error
 // if any of those variables does not exist in the environment.
 func UnmarshalFromEnv(e interface{}) error {
+	if AutoVerbose {
+		log.Printf("envie: unmarshaling env from system")
+	}
 	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
 	errors := []string{}
@@ -76,10 +74,11 @@ func UnmarshalFromEnv(e interface{}) error {
 		tag := t.Field(i).Tag
 		env := tag.Get("envie")
 		val := os.Getenv(env)
-		v.Field(i).SetString(val)
 		if len(val) <= 0 {
 			errors = append(errors, env)
+			continue
 		}
+		v.Field(i).SetString(val)
 	}
 	if len(errors) != 0 {
 		str := "environment variable(s) not found:\n"
@@ -114,6 +113,9 @@ func Properties(path string) (map[string]string, error) {
 // will ignore any values not annotated as `envie="VAR_NAME"`. It returns an
 // error if it fails.
 func UnmarshalFromEnvFile(path string, e interface{}) error {
+	if AutoVerbose {
+		log.Printf("envie: unmarshaling env from %v", path)
+	}
 	props, err := Properties(path)
 	if err != nil {
 		return err
