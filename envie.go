@@ -43,11 +43,11 @@ func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
 	err2 := UnmarshalFromEnv(e)
 	if err1 != nil && err2 != nil {
-		if AutoPanic {
-			log.Fatalf("envie:\n%v\n%v\n", err1, err2)
-		}
 		if AutoVerbose {
 			log.Printf("envie:\n%v\n%v\n", err1, err2)
+		}
+		if AutoPanic {
+			log.Fatalf("envie:\n%v\n%v\n", err1, err2)
 		}
 	}
 	if err1 != nil {
@@ -78,7 +78,7 @@ func UnmarshalFromEnv(e interface{}) error {
 		}
 	}
 	if len(errors) != 0 {
-		str := "environment variables not found:\n"
+		str := "environment variable(s) not found:\n"
 		for _, err := range errors {
 			str += "\t" + err + "\n"
 		}
