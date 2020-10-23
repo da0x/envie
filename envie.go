@@ -129,6 +129,9 @@ func UnmarshalFromEnvFile(path string, e interface{}) error {
 			errors = append(errors, env)
 			continue
 		}
+		if AutoVerbose {
+			log.Printf("export %v=%v", env, val)
+		}
 		v.Field(i).SetString(val)
 	}
 	if len(errors) != 0 {
