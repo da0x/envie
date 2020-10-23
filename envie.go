@@ -35,10 +35,10 @@ var AutoVerbose = true
 
 // Auto reads an struct of enironment variables from any of the following:
 // 1. From a properties file from the current directory.
-//		See AutoPath
+//        See AutoPath
 // 2. From the operating system's environment variable.
 // If this function fails, it will panic if AutoPanic is set to true.
-//		See AutoPanic
+//        See AutoPanic
 func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
 	err2 := UnmarshalFromEnv(e)
