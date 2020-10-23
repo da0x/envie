@@ -115,12 +115,11 @@ func UnmarshalFromEnvFile(path string, e interface{}) error {
 		tag := t.Field(i).Tag
 		env := tag.Get("envie")
 		val, ok := props[env]
-		if ok {
-			v.Field(i).SetString(val)
-			if len(val) <= 0 {
-				errors = append(errors, env)
-			}
+		if !ok || len(val) == 0 {
+			errors = append(errors, env)
+			continue
 		}
+		v.Field(i).SetString(val)
 	}
 	if len(errors) != 0 {
 		str := "environment variable(s) not found:\n"
