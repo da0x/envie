@@ -42,7 +42,11 @@ var AutoVerbose = true
 func Auto(e interface{}) {
 	err1 := UnmarshalFromEnvFile(AutoPath, e)
 	err2 := UnmarshalFromEnv(e)
-	if err1 != nil && err2 != nil {
+	if AutoVerbose {
+		log.Println("envie: loaded settings:")
+		log.Printf("%+v", e)
+	}
+	if err1 != nil || err2 != nil {
 		if AutoVerbose {
 			log.Printf("envie:\n%v\n%v\n", err1, err2)
 		}
@@ -51,14 +55,14 @@ func Auto(e interface{}) {
 		}
 	}
 	if err1 != nil {
-		log.Printf("envie error env file:\n%v\n", err1)
+		if AutoVerbose {
+			log.Printf("envie error env file:\n%v\n", err1)
+		}
 	}
 	if err2 != nil {
-		log.Printf("envie error env file:\n%v\n", err2)
-	}
-	if AutoVerbose {
-		log.Println("envie: settings:")
-		log.Printf("%+v", e)
+		if AutoVerbose {
+			log.Printf("envie error env file:\n%v\n", err2)
+		}
 	}
 }
 
