@@ -33,7 +33,7 @@ var AutoPath = ".env"
 var AutoPanic = true
 var AutoVerbose = true
 
-// Auto reads an struct of enironment variables from any of the following:
+// Auto reads a struct of enironment variables from any of the following:
 // 1. From a properties file from the current directory.
 //        See AutoPath
 // 2. From the operating system's environment variable.
