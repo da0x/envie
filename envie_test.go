@@ -23,24 +23,43 @@ import (
 	"testing"
 )
 
+type fail struct {
+	V1 string `envie:"TEST_VARIABLE_x"`
+	V2 string `envie:"TEST_VARIABLE_y"`
+}
+
+func TestAutoFails(t *testing.T) {
+	AutoPanic = false
+	var e fail
+	Auto(&e)
+	empty := empty(&e)
+	if len(empty) != 2 {
+		t.Errorf("expected 2 errors, found %v", len(empty))
+	}
+}
+
 type entity struct {
 	V1 string `envie:"TEST_VARIABLE_1"`
 	V2 string `envie:"TEST_VARIABLE_2"`
 }
 
-func TestUnmarshalFromEnvFile(t *testing.T) {
+func TestUnmarshalFromFile(t *testing.T) {
 	hello := "hello"
 	world := "world"
 	var e entity
 	err := UnmarshalFromFile(".env", &e)
+	empty := empty(&e)
+	if len(empty) != 0 {
+		t.Errorf("expected 0 errors, found %v", len(empty))
+	}
 	if err != nil {
 		t.Errorf("Error %v", err)
 	}
 	if e.V1 != hello {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
 	}
 	if e.V2 != world {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 }
 
@@ -50,10 +69,10 @@ func TestAuto(t *testing.T) {
 	world := "world"
 	Auto(&e)
 	if e.V1 != hello {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
 	}
 	if e.V2 != world {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 	hello = "Hello"
 	world = "World"
@@ -61,14 +80,14 @@ func TestAuto(t *testing.T) {
 	os.Setenv("TEST_VARIABLE_2", world)
 	Auto(&e)
 	if e.V1 != hello {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
 	}
 	if e.V2 != world {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 }
 
-func TestUnmarshalFromEnv(t *testing.T) {
+func TestUnmarshalFromSystem(t *testing.T) {
 	hello := "hello"
 	world := "world"
 	os.Setenv("TEST_VARIABLE_1", hello)
@@ -79,9 +98,9 @@ func TestUnmarshalFromEnv(t *testing.T) {
 		t.Errorf("Error %v", err)
 	}
 	if e.V1 != hello {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
 	}
 	if e.V2 != world {
-		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+		t.Errorf("incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
 	}
 }

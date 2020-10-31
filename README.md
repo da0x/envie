@@ -3,13 +3,10 @@
 # envie
 Welcome to envie! This project helps you read a full struct of env variables
 from your system. First, the `Auto` function will attempt to read the environment
-variables from a properties file. Default path is `.env`, see `AutoPath`.
-Afterwards, it will attempt to read the same values from the system's
-environment.
+variables from the system.
+If it fails, it will attempt to recover by reading the values from a properties
+file. Default path is `.env`, see `AutoPath`.
 If both methods fail, it will panic if AutoPanic is set to true. (Default).
-Otherwise the values from the system's env will override anything loaded
-from the properties file. If either method fully succeeds, there will be no
-errors.
 ## Installation
 To install the library simply run:
 ```

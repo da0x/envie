@@ -143,16 +143,17 @@ func UnmarshalFromFile(path string, e interface{}) error {
 	return nil
 }
 
+// Empty returns a slice of empty environment variables.
 func empty(e interface{}) []string {
-	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
-	empty := []string{}
-	for i := 0; i < t.NumField(); i++ {
+	t := reflect.TypeOf(e).Elem()
+	o := []string{}
+	for i := 0; i < v.NumField(); i++ {
 		tag := t.Field(i).Tag
 		env := tag.Get("envie")
 		if len(v.Field(i).String()) == 0 {
-			empty = append(empty, env)
+			o = append(o, env)
 		}
 	}
-	return empty
+	return o
 }
