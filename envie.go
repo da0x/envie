@@ -34,30 +34,33 @@ var AutoPanic = true
 var AutoVerbose = true
 
 // Auto reads an struct of enironment variables from any of the following:
-// 1. From a properties file from the current directory.
+// 1. Attempt to read env variables from the system.
+// 2. If the above fails, fall back to reading env from file.
 //        See AutoPath
-// 2. From the operating system's environment variable.
 // If this function fails, it will panic if AutoPanic is set to true.
 //        See AutoPanic
 func Auto(e interface{}) {
-	err1 := UnmarshalFromEnvFile(AutoPath, e)
-	err2 := UnmarshalFromEnv(e)
-	if err1 != nil && err2 != nil {
-		if AutoPanic {
-			log.Printf("envie: error both methods of importing configurations failed")
-			log.Printf("envie: error loading env file:\n%v\n", err1)
-			log.Printf("envie: error loading system env:\n%v\n", err2)
-			log.Fatalf("envie: missing configurations.")
+	err := UnmarshalFromSystem(e)
+	if err != nil {
+		log.Printf("envie: WARNING: failed to read environment variables from system\n")
+		log.Printf("envie: fallback to file: %v\n", AutoPath)
+		err = UnmarshalFromFile(AutoPath, e)
+		if err != nil {
+			log.Printf("envie: failed to read environment variables:\n")
+			empty := empty(e)
+			for _, v := range empty {
+				fmt.Printf("\t%v", v)
+			}
+			if AutoPanic {
+				panic("envie: panic.")
+			}
 		}
 	}
 }
 
-// UnmarshalFromEnv reads an entire struct of env variables. Returns an error
+// UnmarshalFromSystem reads an entire struct of env variables. Returns an error
 // if any of those variables does not exist in the environment.
-func UnmarshalFromEnv(e interface{}) error {
-	if AutoVerbose {
-		log.Printf("envie: unmarshaling env from system")
-	}
+func UnmarshalFromSystem(e interface{}) error {
 	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
 	errors := []string{}
@@ -103,10 +106,10 @@ func Properties(path string) (map[string]string, error) {
 	return o, nil
 }
 
-// UnmarshalFromEnvFile attempts to read a struct from an existing env file. It
+// UnmarshalFromFile attempts to read a struct from an existing env file. It
 // will ignore any values not annotated as `envie="VAR_NAME"`. It returns an
 // error if it fails.
-func UnmarshalFromEnvFile(path string, e interface{}) error {
+func UnmarshalFromFile(path string, e interface{}) error {
 	if AutoVerbose {
 		log.Printf("envie: unmarshaling env from %v", path)
 	}
@@ -138,4 +141,18 @@ func UnmarshalFromEnvFile(path string, e interface{}) error {
 		return fmt.Errorf(str)
 	}
 	return nil
+}
+
+func empty(e interface{}) []string {
+	t := reflect.TypeOf(e).Elem()
+	v := reflect.ValueOf(e).Elem()
+	empty := []string{}
+	for i := 0; i < t.NumField(); i++ {
+		tag := t.Field(i).Tag
+		env := tag.Get("envie")
+		if len(v.Field(i).String()) == 0 {
+			empty = append(empty, env)
+		}
+	}
+	return empty
 }

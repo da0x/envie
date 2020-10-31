@@ -32,7 +32,7 @@ func TestUnmarshalFromEnvFile(t *testing.T) {
 	hello := "hello"
 	world := "world"
 	var e entity
-	err := UnmarshalFromEnvFile(".env", &e)
+	err := UnmarshalFromFile(".env", &e)
 	if err != nil {
 		t.Errorf("Error %v", err)
 	}
@@ -45,10 +45,20 @@ func TestUnmarshalFromEnvFile(t *testing.T) {
 }
 
 func TestAuto(t *testing.T) {
-	hello := "Hello"
-	world := "world"
-	os.Setenv("TEST_VARIABLE_1", hello)
 	var e entity
+	hello := "hello"
+	world := "world"
+	Auto(&e)
+	if e.V1 != hello {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
+	}
+	if e.V2 != world {
+		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", world, e.V2)
+	}
+	hello = "Hello"
+	world = "World"
+	os.Setenv("TEST_VARIABLE_1", hello)
+	os.Setenv("TEST_VARIABLE_2", world)
 	Auto(&e)
 	if e.V1 != hello {
 		t.Errorf("envie: incorrect environment variable:\nexpected:%v\nfound:%v", hello, e.V1)
@@ -64,7 +74,7 @@ func TestUnmarshalFromEnv(t *testing.T) {
 	os.Setenv("TEST_VARIABLE_1", hello)
 	os.Setenv("TEST_VARIABLE_2", world)
 	var e entity
-	err := UnmarshalFromEnv(&e)
+	err := UnmarshalFromSystem(&e)
 	if err != nil {
 		t.Errorf("Error %v", err)
 	}
