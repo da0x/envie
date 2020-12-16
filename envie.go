@@ -42,8 +42,10 @@ var AutoVerbose = true
 func Auto(e interface{}) {
 	err := UnmarshalFromSystem(e)
 	if err != nil {
-		log.Printf("envie: WARNING: failed to read environment variables from system\n")
-		log.Printf("envie: fallback to file: %v\n", AutoPath)
+		if AutoVerbose {
+			log.Printf("envie: WARNING: failed to read environment variables from system\n")
+			log.Printf("envie: fallback to file: %v\n", AutoPath)
+		}
 		err = UnmarshalFromFile(AutoPath, e)
 		if err != nil {
 			log.Printf("envie: failed to read environment variables:\n")
