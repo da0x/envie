@@ -52,7 +52,7 @@ func Auto(e interface{}) {
 			log.Printf("envie: failed to read environment variables:\n")
 			empty := empty(e)
 			for _, v := range empty {
-				fmt.Printf("\t%v", v)
+				log.Println(color.Cyan, v, color.White, "is not defined", color.Reset)
 			}
 			if AutoPanic {
 				panic("envie: panic.")
