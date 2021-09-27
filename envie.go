@@ -27,6 +27,7 @@ import (
 	"reflect"
 
 	"github.com/da0x/envie/props"
+	"github.com/da0x/envie/color"
 )
 
 var AutoPath = ".env"
@@ -75,7 +76,7 @@ func UnmarshalFromSystem(e interface{}) error {
 			continue
 		}
 		if AutoVerbose {
-			log.Printf("export %v=%v", env, val)
+			log.Println(color.Red, env, color.Reset, "=", color.Green, val, color.Reset)
 		}
 		v.Field(i).SetString(val)
 	}
@@ -131,7 +132,7 @@ func UnmarshalFromFile(path string, e interface{}) error {
 			continue
 		}
 		if AutoVerbose {
-			log.Printf("export %v=%v", env, val)
+			log.Println(color.Red, env, color.Reset, "=", color.Green, val, color.Reset)
 		}
 		v.Field(i).SetString(val)
 	}
