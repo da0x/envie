@@ -1,0 +1,21 @@
+package r
+
+var End = "\033[0m"
+var Red = "\033[31m"
+var Green = "\033[32m"
+var Yellow = "\033[33m"
+var Blue = "\033[34m"
+var Purple = "\033[35m"
+var Cyan = "\033[36m"
+var Gray = "\033[37m"
+var White = "\033[97m"
+
+var E = "\033[0m"
+var R = "\033[31m"
+var G = "\033[32m"
+var Y = "\033[33m"
+var B = "\033[34m"
+var P = "\033[35m"
+var C = "\033[36m"
+var A = "\033[37m"
+var W = "\033[97m"
